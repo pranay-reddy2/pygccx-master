@@ -51,25 +51,20 @@ The best way to get started is to look at the `examples/` folder. The `beam/` ex
 A rough sketch of how the workflow looks:
 
 ```python
-import gmsh
-from pygccx import Model
+from pygccx import model as ccx_model
+from pygccx import model_keywords as mk
+from pygccx import step_keywords as sk
+from pygccx import enums
 
-# 1. Build geometry in Gmsh
-gmsh.initialize()
-# ... your Gmsh geometry code here ...
-
-# 2. Create a pygccx model and import the mesh
-model = Model('my_model')
-model.mesh.read_gmsh_mesh()
-
-# 3. Define materials and sections
-# ...
-
-# 4. Set up load steps
-# ...
-
-# 5. Solve or export
-model.solve()
+with ccx_model.Model('ccx', 'cgx', jobname='beam') as model:
+    gmsh = model.get_gmsh()
+    gmsh.model.occ.add_box(0, 0, 0, 100, 10, 10)
+    gmsh.model.occ.synchronize()
+    gmsh.model.mesh.generate(3)
+    gmsh.model.add_physical_group(3, [1], name='BEAM')
+    model.update_mesh_from_gmsh()
+    # ... add BCs, material, steps
+    model.solve()
 ```
 
 > **Tip:** Using VS Code or PyCharm with type checking turned on helps a lot — most classes have docstrings and type hints so autocomplete actually works.

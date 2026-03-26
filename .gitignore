@@ -6,8 +6,7 @@ Problems/
 build/
 dist/
 pygccx.egg-info/
-build_doc.bat
-build_package.bat
+
 
 # Calculix files in examples
 executables/
